@@ -14,3 +14,10 @@ jobs:
     - run: |
        docker pull phpstan/phpstan
        docker run -v $(pwd):/src --rm phpstan/phpstan analyse --error-format=json /src > phpstan-output-docker.json
+
+      continue-on-error: true             
+    - uses: actions/upload-artifact@v2
+      with:
+        name: phpstan-docker
+        path: phpstan-output-docker.json
+      if: always()      
