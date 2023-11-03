@@ -28,10 +28,7 @@ jobs:
     - run: |
        sudo apt update && sudo apt install composer -y
        sudo apt install php-xml -y 
-    - name: test1
-      run: composer require --dev phpstan/phpstan
-    - name: test2  
-      run: |
+       composer require --dev phpstan/phpstan
        mv vendor/phpstan/phpstan/phpstan.phar /usr/local/bin/phpstan
        phpstan analyse --error-format=json . > phpstan-output.json
       continue-on-error: true             
