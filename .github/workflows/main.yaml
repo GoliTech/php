@@ -6,18 +6,38 @@ on:
       - main
 
 jobs:
-  sast_phpstan:
+  sast_phpstan_docker:
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v3
     - run: |
        docker pull phpstan/phpstan
        docker run -v $(pwd):/src --rm phpstan/phpstan analyse --error-format=json /src > phpstan-output-docker.json
-
       continue-on-error: true             
     - uses: actions/upload-artifact@v2
       with:
         name: phpstan-docker
         path: phpstan-output-docker.json
+      if: always()     
+
+
+  sast_phpstan:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - run: |
+       apt update && apt install composer -y
+       apt install php-xml -y 
+       composer require --dev phpstan/phpstan
+       mv vendor/phpstan/phpstan/phpstan.phar /usr/local/bin/phpstan
+       phpstan analyse --error-format=json . > phpstan-output.json
+      continue-on-error: true             
+    - uses: actions/upload-artifact@v2
+      with:
+        name: phpstan
+
+
+
+        
+        path: phpstan-output.json
       if: always()      
