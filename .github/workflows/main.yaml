@@ -6,13 +6,11 @@ on:
       - main
 
 jobs:
-  sast_ohostan:
+  sast_phpstan:
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v3
-    - uses: php-actions/composer@v6 # or alternative dependency management
-    - uses: php-actions/phpstan@v3
-      with:
-        path: src/
-
+    - run: |
+       docker pull phpstan/phpstan
+       docker run -v $(pwd):/src --rm phpstan/phpstan analyse --error-format=json /src > phpstan-output-docker.json
